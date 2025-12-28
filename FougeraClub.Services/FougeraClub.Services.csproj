@@ -15,4 +15,8 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FougeraClub.Core\FougeraClub.Core.csproj" />
+  </ItemGroup>
+
 </Project>

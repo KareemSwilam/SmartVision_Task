@@ -30,8 +30,6 @@
     <PackageReference Include="SciSharp.TensorFlow.Redist" Version="2.3.1" />
   </ItemGroup>
   <ItemGroup>
-  </ItemGroup>
-  <ItemGroup>
     <None Update="tessdata\ara.traineddata">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -39,12 +37,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <!-- Exclude Admin area (depends on removed projects) so solution builds as a starter app -->
-    
-  </ItemGroup>
   <!-- IDClassificationMLModel removed for starter repository (file not present) -->
   <ItemGroup>
     <Folder Include="wwwroot\bootstrap\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FougeraClub.Infrastructure\FougeraClub.Infrastructure.csproj" />
+    <ProjectReference Include="..\FougeraClub.Services\FougeraClub.Services.csproj" />
   </ItemGroup>
 </Project>

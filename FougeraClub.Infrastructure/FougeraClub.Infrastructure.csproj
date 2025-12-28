@@ -16,7 +16,10 @@
 
   <ItemGroup>
     <Folder Include="Repository\" />
-    <Folder Include="Persistence\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FougeraClub.Services\FougeraClub.Services.csproj" />
   </ItemGroup>
 
 </Project>
