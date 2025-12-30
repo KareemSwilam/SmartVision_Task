@@ -1,7 +1,14 @@
-﻿using FougeraClub.Infrastructure.Persistence;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using FougeraClub.DependencyInjection;
+using FougeraClub.Infrastructure.Persistence;
+using FougeraClub.Services.Validations;
+using Mapster;
+using MapsterMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +26,13 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddDbContext<ApplicationContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("SQLConnection")));
+builder.Services.AddInfrastructure();
+builder.Services.AddValidationServices();
+var config = TypeAdapterConfig.GlobalSettings;
+config.Scan(Assembly.GetExecutingAssembly());
 
+builder.Services.AddSingleton(config);
+builder.Services.AddScoped<IMapper, ServiceMapper>();
 
 // PermissionScanner removed for starter project
 

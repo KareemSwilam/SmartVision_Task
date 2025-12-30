@@ -10,7 +10,7 @@ namespace FougeraClub.Core.IRespository
     public interface IRepository<T> where T : class
     {
         public Task<T> Get(Expression<Func<T , bool>> filter , bool IsTracking = true);
-        public Task<List<T>> GetAll(Expression<Func<T, bool>>? filter);
+        public Task<List<T>> GetAll(Expression<Func<T, bool>>? filter = null);
         public void Add(T entity);
         public void Update(T entity);
         public void Delete(T entity);

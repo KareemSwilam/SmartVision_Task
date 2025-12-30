@@ -45,7 +45,7 @@ namespace FougeraClub.Infrastructure.Repository
             return await query.FirstOrDefaultAsync(filter);
         }
 
-        public async Task<List<T>> GetAll(Expression<Func<T, bool>>? filter)
+        public async Task<List<T>> GetAll(Expression<Func<T, bool>>? filter = null)
         {
             IQueryable<T> query = _db;
             if (filter != null)
