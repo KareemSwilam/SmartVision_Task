@@ -14,7 +14,7 @@ namespace FougeraClub.Infrastructure.Repository
     public class Repository<T> : IRepository<T> where T : class
     {
         private readonly ApplicationContext _context;
-        private readonly DbSet<T> _db;
+        protected readonly DbSet<T> _db;
         public Repository(ApplicationContext context)
         {
             _context = context;
@@ -33,8 +33,11 @@ namespace FougeraClub.Infrastructure.Repository
                 softentity.DeletedAt = DateTime.Now;
                 _db.Update(entity);
             }
-            _db.Remove(entity);
-            
+            else
+            {
+                _db.Remove(entity);
+            }
+
         }
 
         public async Task<T> Get(Expression<Func<T, bool>> filter, bool IsTracking = true)
