@@ -28,6 +28,7 @@ builder.Services.AddDbContext<ApplicationContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("SQLConnection")));
 builder.Services.AddInfrastructure();
 builder.Services.AddValidationServices();
+builder.Services.AddPurchaesServices();
 var config = TypeAdapterConfig.GlobalSettings;
 config.Scan(Assembly.GetExecutingAssembly());
 

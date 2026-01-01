@@ -12,9 +12,9 @@ namespace FougeraClub.Services.IServices
     {
         public Task<CustomResult> AddSupplier(SupplierCreateDto dto);
         public Task<CustomResult<List<SupplierDto>>> GetSuppliers();
-        public Task<CustomResult<SupplierDto>> GetSupplierByName(string name);
-        public Task<CustomResult> DeleteSupplier(string name);
-
+        public Task<CustomResult<List<SupplierDto>>> GetSupplierByNameOrPhone(string filter);
+        public Task<CustomResult> DeleteSupplier(string VATNumber);
+        public Task<CustomResult> UpdateSupplier(string VATNumber, SupplierUpdateDto dto);
 
     }
 }

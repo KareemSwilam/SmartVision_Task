@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using FougeraClub.Services.DTOs.SupplierDtos;
+using FougeraClub.Services.IServices;
+using FougeraClub.Services.Services;
 using FougeraClub.Services.Validations;
 
 namespace FougeraClub.DependencyInjection
@@ -13,6 +15,14 @@ namespace FougeraClub.DependencyInjection
             services.AddScoped<IValidator<SupplierCreateDto>, SupplierCreateDtoValidation>();
             // Register generic ValidationFilter
             services.AddScoped(typeof(ValidationFilter<>));
+
+            return services;
+        }
+        public static IServiceCollection AddPurchaesServices(this IServiceCollection services)
+        {
+
+            services.AddScoped<IPurchaseItemsServices, PurchaseItemsServices>();
+            services.AddScoped<IPurchaseOrdersServices, PurchaseOrdersServices>();
 
             return services;
         }
