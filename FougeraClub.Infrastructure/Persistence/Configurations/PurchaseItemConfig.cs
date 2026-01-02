@@ -16,6 +16,7 @@ namespace FougeraClub.Infrastructure.Persistence.Configurations
             builder.Property(pi => pi.Amount).IsRequired();
             builder.HasIndex(pi => pi.PurchaseOrdersId);
             builder.Property(pi => pi.Description).IsRequired();
+            builder.Property(pi => pi.TotalInLine).HasComputedColumnSql("[Amount] * [PricePerUnit]", stored: true);
             
         }
     }
