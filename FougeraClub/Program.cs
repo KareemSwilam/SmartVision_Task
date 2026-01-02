@@ -2,6 +2,7 @@
 using FluentValidation.AspNetCore;
 using FougeraClub.DependencyInjection;
 using FougeraClub.Infrastructure.Persistence;
+using FougeraClub.Services.Mapping;
 using FougeraClub.Services.Validations;
 using Mapster;
 using MapsterMapper;
@@ -30,10 +31,13 @@ builder.Services.AddInfrastructure();
 builder.Services.AddValidationServices();
 builder.Services.AddPurchaesServices();
 var config = TypeAdapterConfig.GlobalSettings;
-config.Scan(Assembly.GetExecutingAssembly());
+config.Scan(typeof(PurchaseOrdersMappingConfig).Assembly,
+    typeof(PurchaseItemsMappingConfig).Assembly,
+   typeof(SupplierMappingConfig).Assembly);
 
 builder.Services.AddSingleton(config);
 builder.Services.AddScoped<IMapper, ServiceMapper>();
+
 
 // PermissionScanner removed for starter project
 

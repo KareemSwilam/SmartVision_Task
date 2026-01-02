@@ -10,6 +10,6 @@ namespace FougeraClub.Services.DTOs.PurchaseOrdersDtos
     {
         public DateOnly Date { get; set; }
         public bool ApplyVAT { get; set; }
-        public int SupplierId { get; set; }
+        public string VATNumber { get; set; }
     }
 }

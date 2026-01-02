@@ -12,10 +12,11 @@ namespace FougeraClub.Services.IServices
     {
         public Task<CustomResult> AddOrders(PurchaseOrdersCreateDto createDto);
         public Task<CustomResult<List<PurchaseOrdersAndSupplier>>> GetOrderAndSupplier();
-        public Task<CustomResult<List<PurchaseOrdersAndSupplier>>> GetOrderAndSupplierWithFilter(PurchaseOrdersAndSupplierFilterDto dto);
+        public Task<CustomResult<List<PurchaseOrdersAndSupplier>>> GetOrderAndSupplierWithFilter(PurchaseOrdersAndSupplierFilterDto? dto = null);
         public Task<CustomResult<PurchaseOrderAndSupplierAndItems>> GetOrderAndSupplierAndItems(int id);
         public Task<CustomResult> DeleteOrder(int id);
         public Task<CustomResult> UpdateOrder(int id, PurchaseOrdersUpdateDto dto);
+        public Task<CustomResult<int>> GetLastOrderNumber();
         
     }
 }

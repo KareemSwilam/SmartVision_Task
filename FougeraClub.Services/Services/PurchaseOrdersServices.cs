@@ -24,10 +24,11 @@ namespace FougeraClub.Services.Services
         }
         public async Task<CustomResult> AddOrders(PurchaseOrdersCreateDto createDto)
         {
-            var supplierExist = await _unit.Supplier.Get(s => s.Id == createDto.SupplierId);
+            var supplierExist = await _unit.Supplier.Get(s => s.VATNumber == createDto.VATNumber);
             if (supplierExist == null)
                 return CustomResult.Failure(CustomError.NotFoundError("Supplier Not Exist"));
             var order = _mapper.Map<PurchaseOrders>(createDto);
+            order.SupplierId = supplierExist.Id;
             _unit.PurchaseOrders.Add(order);
             var complete = await _unit.Save();
             if (complete == 1)
@@ -48,10 +49,16 @@ namespace FougeraClub.Services.Services
 
         }
 
+        public async Task<CustomResult<int>> GetLastOrderNumber()
+        {
+            var number  = await _unit.PurchaseOrders.GetLastOrdernumber();  
+            return CustomResult<int>.Success(number);   
+        }
+
         public async Task<CustomResult<List<PurchaseOrdersAndSupplier>>> GetOrderAndSupplier()
         {
             var orderSupplier = await _unit.PurchaseOrders.GetAllOrderandSupplier();
-            var orderSupplierDto = _mapper.Map<List<PurchaseOrdersAndSupplier>>(orderSupplier);
+            var orderSupplierDto = orderSupplier.Adapt<List<PurchaseOrdersAndSupplier>>();
             return CustomResult<List<PurchaseOrdersAndSupplier>>.Success(orderSupplierDto);
         }
 
@@ -66,10 +73,16 @@ namespace FougeraClub.Services.Services
 
         }
 
-        public async Task<CustomResult<List<PurchaseOrdersAndSupplier>>> GetOrderAndSupplierWithFilter(PurchaseOrdersAndSupplierFilterDto dto)
+        public async Task<CustomResult<List<PurchaseOrdersAndSupplier>>> GetOrderAndSupplierWithFilter(PurchaseOrdersAndSupplierFilterDto? dto = null)
         {
-            var orderSupplier = await _unit.PurchaseOrders.GetAllOrderandSupplier(fromDate: dto.fromDate, toDate: dto.toDate, SupplierName: dto.supplierName  );
-            var orderSupplierDto = _mapper.Map<List<PurchaseOrdersAndSupplier>>(orderSupplier);
+            if(dto == null)
+            {
+                var orderSuppliers = await _unit.PurchaseOrders.GetAllOrderandSupplier();
+                var orderSupplierDtos = orderSuppliers.Adapt<List<PurchaseOrdersAndSupplier>>();
+                return CustomResult<List<PurchaseOrdersAndSupplier>>.Success(orderSupplierDtos);
+            }
+            var orderSupplier = await _unit.PurchaseOrders.GetAllOrderandSupplier(fromDate: dto.fromDate, toDate: dto.toDate, VATNumber: dto.VaTNumber  );
+            var orderSupplierDto = orderSupplier.Adapt<List<PurchaseOrdersAndSupplier>>();
             return CustomResult<List<PurchaseOrdersAndSupplier>>.Success(orderSupplierDto);
         }
 
@@ -79,6 +92,10 @@ namespace FougeraClub.Services.Services
             if (orderExist == null)
                 return CustomResult.Failure(CustomError.NotFoundError("Order you try to upate not found"));
             dto.Adapt(orderExist);
+            var supplierExist = await _unit.Supplier.Get(s => s.Id == dto.SupplierId);
+            if (supplierExist == null)
+                return CustomResult.Failure(CustomError.NotFoundError("The Supplier you try to assign order to not exist"));
+            orderExist.SupplierId = supplierExist.Id;
             _unit.PurchaseOrders.Update(orderExist);
             var complete = await _unit.Save();
             if (complete == 1)

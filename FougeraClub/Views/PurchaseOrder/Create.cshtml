@@ -1,0 +1,457 @@
+﻿@using FougeraClub.VM
+
+@model CreatePurchaseOrderVM
+
+@{
+
+    ViewData["Title"] = "إضافة أمر شراء";
+
+}
+
+
+
+<style>
+
+    .green-border {
+        border: 1px solid #28a745 !important;
+    }
+
+
+
+    .text-ico {
+        color: #28a745;
+    }
+
+
+
+    .sec-title h1 {
+        font-size: 1.25rem;
+        color: #28a745;
+        margin-bottom: 5px;
+    }
+
+
+
+    .title-sep-left {
+        height: 2px;
+        width: 50px;
+        background: #28a745;
+        margin-bottom: 2px;
+    }
+
+
+
+    .title-sep-sm-left {
+        height: 2px;
+        width: 25px;
+        background: #28a745;
+    }
+
+
+
+    .card {
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+
+
+    .date-icon {
+        width: 20px;
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+
+
+    .input-icon-left {
+        position: relative;
+    }
+
+
+
+        .input-icon-left input {
+            padding-left: 35px;
+        }
+
+    /* تنسيق الحقول داخل الجدول */
+
+    .table-editable-input {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100%;
+    }
+
+
+
+        .table-editable-input:focus {
+            border-color: #28a745;
+            outline: none;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.2);
+        }
+
+</style>
+
+
+
+<div class="page-content d-flex flex-column min-vh-100">
+
+    <div id="page-container" class="page-container flex-grow-1">
+
+        <div class="card-header border-bottom d-flex align-items-start row my-3">
+
+            <div class="d-flex align-items-center col-md-6 flex-wrap">
+
+                <h4 class="ico-header-title">
+
+                    <i class="fa-solid fa-cart-shopping me-1 text-ico"></i> إضافة أمر الشراء
+
+                </h4>
+
+            </div>
+
+            <div class="col-md-6 d-flex align-items-center justify-content-end gap-1 flex-wrap">
+
+                <nav aria-label="breadcrumb">
+
+                    <ol class="breadcrumb mb-0 py-2">
+
+                        <li class="breadcrumb-item"><a href="#">وحدة أوامر الشراء</a></li>
+
+                        <li class="breadcrumb-item"><a href="/Admin/PurchaseOrder">أوامر الشراء</a></li>
+
+                        <li class="breadcrumb-item active">إضافة</li>
+
+                    </ol>
+
+                </nav>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="card p-4">
+
+            <form method="post" asp-action="Create" id="purchaseOrderForm">
+
+                @Html.AntiForgeryToken()
+
+                <div class="row">
+
+                    <div class="col-md-10">
+
+                        <label class="form-label fw-semibold">رقم أمر الشراء</label>
+
+                        <input value="@ViewBag.NextOrderNumber" disabled readonly class="form-control mb-2 bg-light" type="text">
+
+                    </div>
+
+                    <div class="col-md-2">
+
+                        <div class="d-flex align-items-center gap-3 ms-1 mt-4">
+
+                            <input type="checkbox" class="form-check-input" style="transform: scale(1.6); cursor: pointer;"
+                                   id="HasVAT" name="Order.ApplyVAT" value="true">
+
+                            <label class="form-label fw-semibold mb-0" for="HasVAT">With 5% VAT</label>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6 mb-2">
+
+                        <label class="form-label fw-semibold">التاريخ</label>
+
+                        <div class="input-icon-left">
+
+                            <img src="https://cdn-icons-png.flaticon.com/512/747/747310.png" class="date-icon">
+
+                            <input class="form-control green-border" type="date" name="Order.Date" required id="DateInput">
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">المورد</label>
+
+                        <select class="form-control mb-2" required name="Order.VATNumber">
+
+                            <option value="">-- اختر المورد --</option>
+
+                            @if (ViewBag.Suppliers != null)
+
+                            {
+
+                                foreach (var s in ViewBag.Suppliers)
+
+                                {
+
+                                    <option value="@s.VATNumber">@s.Name</option>
+
+                                }
+
+                            }
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+
+                <hr class="my-4">
+
+
+
+                <div class="row">
+
+                    <div class="col-md-12">
+
+                        <div class="sec-title"><h1>إضافة بنود أمر الشراء</h1><div class="title-sep-left"></div><div class="title-sep-sm-left"></div></div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="row mt-3 bg-light p-3 rounded border">
+
+                    <div class="col-md-3">
+
+                        <label class="form-label fw-semibold">الكمية</label>
+
+                        <input id="temp_Quantity" class="form-control mb-2" type="number" value="1" min="1">
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <label class="form-label fw-semibold">سعر الوحدة</label>
+
+                        <input id="temp_Price" placeholder="0.00" class="form-control mb-2" type="number" step="0.01">
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">البيان (الوصف)</label>
+
+                        <input id="temp_Description" class="form-control mb-2" type="text">
+
+                    </div>
+
+                    <div class="col-md-12 d-flex justify-content-end mt-2">
+
+                        <button type="button" class="btn btn-success px-4" onclick="addItemToTable()">
+
+                            <i class="fa-solid fa-cart-plus me-2"></i> إضافة للبند
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="row mt-4">
+
+                    <div class="col-md-12">
+
+                        <div class="sec-title mb-3"><h1>بنود أمر الشراء المضافة </h1><div class="title-sep-left"></div><div class="title-sep-sm-left"></div></div>
+
+                        <div class="table-responsive">
+
+                            <table class="table table-bordered table-hover align-middle">
+
+                                <thead class="table-light">
+
+                                    <tr>
+
+                                        <th style="width: 15%">الكمية</th>
+
+                                        <th style="width: 20%">سعر الوحدة</th>
+
+                                        <th style="width: 45%">البيان</th>
+
+                                        <th style="width: 20%" class="text-center">أدوات</th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody id="itemsTableBody">
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="d-flex justify-content-end mt-4 border-top pt-3">
+
+                    <button type="submit" class="btn btn-success me-2 px-5">
+
+                        <i class="fa-solid fa-floppy-disk me-1"></i> حفظ أمر الشراء
+
+                    </button>
+
+                    <a class="btn btn-outline-secondary" href="/PurchaseOrder/Index">رجوع</a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+@section Scripts {
+
+    <script>
+
+        let itemIndex = 0;
+
+
+
+        function addItemToTable() {
+
+            const qty = document.getElementById('temp_Quantity').value;
+
+            const price = document.getElementById('temp_Price').value;
+
+            const desc = document.getElementById('temp_Description').value;
+
+
+
+            if (!qty || qty <= 0 || !price || price <= 0 || desc.trim() === "") {
+
+                alert("يرجى إكمال البيانات بشكل صحيح");
+
+                return;
+
+            }
+
+
+
+            const tbody = document.getElementById('itemsTableBody');
+
+            const row = document.createElement('tr');
+
+
+
+            // إضافة الصف مع حقول Input ليكون قابلاً للتعديل فوراً
+
+            row.innerHTML = `
+
+                <td>
+
+                    <input type="number" class="table-editable-input" name="Items[${itemIndex}].Amount" value="${qty}" min="1" />
+
+                </td>
+
+                <td>
+
+                    <input type="number" step="0.01" class="table-editable-input" name="Items[${itemIndex}].PricePerUnit" value="${price}" />
+
+                </td>
+
+                <td>
+
+                    <input type="text" class="table-editable-input" name="Items[${itemIndex}].Description" value="${desc}" />
+
+                </td>
+
+                <td class="text-center">
+
+                    <button type="button" class="btn-control btn-icon btn-sm rounded-circle" onclick="removeRow(this)"><i class="fa-solid fa-trash fs-5"></i></button>
+
+                </td>
+
+            `;
+
+
+
+            tbody.appendChild(row);
+
+            itemIndex++;
+
+
+
+            // تصغير وتصفير حقول الإدخال
+
+            document.getElementById('temp_Price').value = '';
+
+            document.getElementById('temp_Description').value = '';
+
+            document.getElementById('temp_Quantity').focus();
+
+        }
+
+
+
+        function removeRow(btn) {
+
+            btn.closest('tr').remove();
+
+            reIndexTable();
+
+        }
+
+
+
+        function reIndexTable() {
+
+            const rows = document.querySelectorAll('#itemsTableBody tr');
+
+            itemIndex = 0;
+
+            rows.forEach((row, index) => {
+
+                row.querySelectorAll('input').forEach(input => {
+
+                    const name = input.getAttribute('name');
+
+                    const newName = name.replace(/\[\d+\]/, `[${index}]`);
+
+                    input.setAttribute('name', newName);
+
+                });
+
+                itemIndex = index + 1;
+
+            });
+
+        }
+
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            document.getElementById('DateInput').value = new Date().toISOString().split('T')[0];
+
+        });
+
+    </script>
+
+}
+

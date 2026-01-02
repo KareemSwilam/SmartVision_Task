@@ -15,7 +15,7 @@ namespace FougeraClub.Services.Mapping
         {
             config.NewConfig<PurchaseOrdersCreateDto, PurchaseOrders>();
             config.NewConfig<PurchaseOrders, PurchaseOrdersAndSupplier>()
-                .Map(dest => dest.SupplierName, src => src.supplier.Name);
+                .Map(dest => dest.Name, src => src.supplier.Name);
             config.NewConfig<PurchaseOrders, PurchaseOrderAndSupplierAndItems>()
                   .Map(dest => dest.SupplierName, src=>  src.supplier.Name);  
             config.NewConfig<PurchaseOrdersUpdateDto, PurchaseOrders>();

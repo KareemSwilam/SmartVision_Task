@@ -8,8 +8,8 @@ namespace FougeraClub.Services.DTOs.PurchaseOrdersDtos
 {
     public class PurchaseOrdersAndSupplierFilterDto
     {
-        public DateOnly fromDate {  get; set; } 
-        public DateOnly toDate { get; set; }
-        public string supplierName { get; set; }    
+        public DateOnly? fromDate {  get; set; } 
+        public DateOnly? toDate { get; set; }
+        public string? VaTNumber { get; set; }    
     }
 }

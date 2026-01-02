@@ -16,6 +16,7 @@ namespace FougeraClub.Infrastructure.Persistence.Configurations
             builder.Property(s => s.Name).IsRequired();
             builder.Property(s => s.VATNumber).IsRequired();
             builder.Property(s => s.PhoneNumber).IsRequired();
+            builder.Property(s => s.IsDeleted).HasDefaultValue(false);
             builder.HasIndex(s => s.Name);
             builder.HasMany(s => s.purchases)
                    .WithOne(p => p.supplier)

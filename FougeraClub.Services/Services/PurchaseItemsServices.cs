@@ -62,9 +62,9 @@ namespace FougeraClub.Services.Services
             return CustomResult<List<PurchaseItemsDto>>.Success(itemsdto);
         }
 
-        public async Task<CustomResult> UpdateItem(int ItemId, PurchaseItemUpdateDto dto)
+        public async Task<CustomResult> UpdateItem( PurchaseItemUpdateDto dto)
         {
-            var itemExist = await _unit.PurchaseItems.Get(pi => pi.Id == ItemId);
+            var itemExist = await _unit.PurchaseItems.Get(pi => pi.Id == dto.Id);
             if (itemExist == null)
                 return CustomResult.Failure(CustomError.NotFoundError("item you try to delete not found"));
             dto.Adapt(itemExist);   

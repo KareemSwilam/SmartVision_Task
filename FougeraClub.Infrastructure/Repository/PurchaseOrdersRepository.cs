@@ -15,15 +15,15 @@ namespace FougeraClub.Infrastructure.Repository
     {
         public PurchaseOrdersRepository(ApplicationContext context) : base(context) { }
 
-        public async Task<List<PurchaseOrders>> GetAllOrderandSupplier(DateOnly? fromDate = null, DateOnly? toDate = null, string? SupplierName = null)
+        public async Task<List<PurchaseOrders>> GetAllOrderandSupplier(DateOnly? fromDate = null, DateOnly? toDate = null, string? VATNumber = null)
         {
             IQueryable<PurchaseOrders> query = _db.Include(po => po.supplier);
             if(fromDate != null )
                 query = query.Where(po => po.Date >=  fromDate);
             if(toDate != null)
-                query = query.Where(po => po.Date <= fromDate);
-            if(SupplierName != null)
-                query = query.Where(po => po.supplier.Name.Contains(SupplierName));
+                query = query.Where(po => po.Date <= toDate);
+            if(VATNumber != null)
+                query = query.Where(po => po.supplier.VATNumber == VATNumber);
             return await query.ToListAsync();            
         }
 
@@ -32,6 +32,12 @@ namespace FougeraClub.Infrastructure.Repository
             IQueryable<PurchaseOrders> query = _db.Include(po => po.supplier)
                                                   .Include(po => po.items);
             return await query.FirstOrDefaultAsync();
+        }
+
+        public  async Task<int> GetLastOrdernumber()
+        {
+            var query = await _db.OrderByDescending(po => po.Id).Select(po => po.Id).FirstAsync();
+            return query;
         }
     }
 }
