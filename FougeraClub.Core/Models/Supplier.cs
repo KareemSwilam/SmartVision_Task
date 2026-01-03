@@ -18,7 +18,7 @@ namespace FougeraClub.Core.Models
         public string Description { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get ; set; }
-
+        
         public ICollection<PurchaseOrders> purchases { get; set; } = new List<PurchaseOrders>();
         
     }

@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace FougeraClub.Core.IRespository
 {
-    public interface IPurchaseItemsRepository: IRepository<PurchaseItems>
+    public interface IInvoiceRepository: IRepository<Invoice>
     {
-        public double GetSubTotalPerOrder(int Orderid);
+        public Task<Invoice> GetInvoiceWithItems(int id);
     }
 }

@@ -195,7 +195,7 @@ namespace FougeraClub.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, UpdatePurchaseOrderVm model)
         {
-            // 1. تحديث بيانات الأوردو الأساسية
+            
             var updateDto = new PurchaseOrdersUpdateDto
             {
                 Date = model.Order.Date,

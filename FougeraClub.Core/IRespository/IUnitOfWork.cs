@@ -11,6 +11,7 @@ namespace FougeraClub.Core.IRespository
         public ISupplierRepository Supplier {  get; }
         public IPurchaseItemsRepository PurchaseItems { get;}
         public IPurchaseOrdersRepository PurchaseOrders { get;}
+        public IInvoiceRepository Invoice { get;  }
         Task<int> Save();
     }
 }

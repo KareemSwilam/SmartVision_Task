@@ -1,5 +1,6 @@
 ﻿using FougeraClub.Core.IRespository;
 using FougeraClub.Core.Models;
+using FougeraClub.Services.DTOs.InvoiceDtos;
 using FougeraClub.Services.DTOs.PurchaseOrdersDtos;
 using FougeraClub.Services.IServices;
 using FougeraClub.Services.Result;
@@ -17,10 +18,12 @@ namespace FougeraClub.Services.Services
     {
         private readonly IUnitOfWork _unit;
         private readonly IMapper _mapper;
+        
         public PurchaseOrdersServices(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unit = unitOfWork;  
             _mapper = mapper;
+            
         }
         public async Task<CustomResult> AddOrders(PurchaseOrdersCreateDto createDto)
         {
@@ -32,7 +35,14 @@ namespace FougeraClub.Services.Services
             _unit.PurchaseOrders.Add(order);
             var complete = await _unit.Save();
             if (complete == 1)
+            {
+                var invoice = new Invoice { PurchaseOrderId = order.Id  };
+                if (order.ApplyVAT)
+                    invoice.VATRate = 0.05;
+                _unit.Invoice.Add(invoice);
+                await _unit.Save();
                 return CustomResult.Success();
+            }
             return CustomResult.Failure(CustomError.ServerError("Failer in Adding New Purchases order"));
 
         }
@@ -98,8 +108,19 @@ namespace FougeraClub.Services.Services
             orderExist.SupplierId = supplierExist.Id;
             _unit.PurchaseOrders.Update(orderExist);
             var complete = await _unit.Save();
+
             if (complete == 1)
+            {
+                var OrderInvoic = await _unit.Invoice.Get(i => i.PurchaseOrderId == id);
+                if (orderExist.ApplyVAT)
+                    OrderInvoic.VATRate = 0.05;
+                else
+                    OrderInvoic.VATRate = 0;
+
+                _unit.Invoice.Update(OrderInvoic);
+                await _unit.Save();
                 return CustomResult.Success();
+            }
             return CustomResult.Failure(CustomError.ServerError("Faild to Update item"));
 
         }

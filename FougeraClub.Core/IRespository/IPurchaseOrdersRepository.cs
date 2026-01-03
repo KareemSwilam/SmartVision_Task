@@ -13,5 +13,6 @@ namespace FougeraClub.Core.IRespository
         public Task<List<PurchaseOrders>> GetAllOrderandSupplier(DateOnly? fromDate = null , DateOnly? toDate = null , string? VATNumber = null );
         public Task<PurchaseOrders> GetAllOrderandSupplierAndItems(int id);
         public Task<int> GetLastOrdernumber();
+        public Task<PurchaseOrders> GetOrderWithSupplier(int id);
     }
 }

@@ -16,9 +16,14 @@ namespace FougeraClub.Infrastructure.Persistence.Configurations
             builder.HasMany(i => i.PurchaseItems)
                    .WithOne(pi => pi.invoice);
             builder.Property(i => i.IsAsign).HasDefaultValue(false);
-            builder.Property(i => i.VATRate).HasDefaultValue(0.15);
+            builder.Property(i => i.VATRate).HasDefaultValue(0);
             builder.Property(i => i.VATAmount).HasComputedColumnSql("[VATRate] * [SubTotal]", stored: true);
             builder.Property(i => i.TotalAmount).HasComputedColumnSql("[SubTotal] + [VATRate] * [SubTotal]", stored: true);
+            builder.HasOne(i => i.purchaseOrder)
+                   .WithOne(po => po.Invoice)
+                   .HasForeignKey<Invoice>(i => i.PurchaseOrderId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

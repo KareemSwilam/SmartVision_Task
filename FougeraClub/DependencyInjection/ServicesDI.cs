@@ -24,6 +24,7 @@ namespace FougeraClub.DependencyInjection
             services.AddScoped<IPurchaseItemsServices, PurchaseItemsServices>();
             services.AddScoped<IPurchaseOrdersServices, PurchaseOrdersServices>();
             services.AddScoped<ISupplierServices, SupplierServices>();
+            services.AddScoped<IInvoiceServices, InvoiceServices>();
 
             return services;
         }

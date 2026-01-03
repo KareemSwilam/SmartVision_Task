@@ -28,10 +28,16 @@ namespace FougeraClub.Services.Services
             if (orderExist == null)
                 return CustomResult.Failure(CustomError.NotFoundError("Order you to try to add item to it not Found"));
             var item = _mapper.Map<PurchaseItems>(dto);
+            var invoice = await _unit.Invoice.Get(i => i.PurchaseOrderId == OrderId);
             item.PurchaseOrdersId = OrderId;
+            item.InvoiceId = invoice.Id;
             _unit.PurchaseItems.Add(item);
             var complete = await _unit.Save();
-            if(complete == 1)
+            var SubTotal =  _unit.PurchaseItems.GetSubTotalPerOrder(OrderId);
+            invoice.SubTotal = SubTotal;
+            _unit.Invoice.Update(invoice);
+            await _unit.Save();
+            if (complete == 1)
                 return CustomResult.Success();
             return CustomResult.Failure(CustomError.ServerError("Faild to add item to order"));
         }
@@ -70,6 +76,11 @@ namespace FougeraClub.Services.Services
             dto.Adapt(itemExist);   
             _unit.PurchaseItems.Update(itemExist);
             var complete = await _unit.Save();
+            var invoice = await _unit.Invoice.Get(i => i.Id == itemExist.InvoiceId);
+            var SubTotal = _unit.PurchaseItems.GetSubTotalPerOrder(itemExist.PurchaseOrdersId);
+            invoice.SubTotal = SubTotal;
+            _unit.Invoice.Update(invoice);
+            await _unit.Save();
             if (complete == 1)
                 return CustomResult.Success();
             return CustomResult.Failure(CustomError.ServerError("Faild to Update item"));

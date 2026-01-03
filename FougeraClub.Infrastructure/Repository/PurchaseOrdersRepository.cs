@@ -39,5 +39,10 @@ namespace FougeraClub.Infrastructure.Repository
             var query = await _db.OrderByDescending(po => po.Id).Select(po => po.Id).FirstAsync();
             return query;
         }
+        public async Task<PurchaseOrders> GetOrderWithSupplier(int id)
+        {
+            IQueryable<PurchaseOrders> query = _db.Where(po => po.Id == id).Include(po => po.supplier);
+            return await query.FirstOrDefaultAsync();
+        }
     }
 }

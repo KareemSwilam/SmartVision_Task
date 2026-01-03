@@ -13,6 +13,7 @@ namespace FougeraClub.Core.Models
         public bool ApplyVAT { get; set; }
         public int SupplierId { get; set; }
         public Supplier supplier {  get; set; }
+        public Invoice Invoice { get; set; }
         public ICollection<PurchaseItems> items { get; set; }  = new HashSet<PurchaseItems>(); 
     }
 }
