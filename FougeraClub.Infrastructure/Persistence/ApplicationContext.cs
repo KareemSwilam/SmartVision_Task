@@ -16,6 +16,7 @@ namespace FougeraClub.Infrastructure.Persistence
         public DbSet<PurchaseItems> purchase_Items { get; set; }
         public DbSet<PurchaseOrders> purchase_Orders { get; set; }
         public DbSet<Invoice> invoices { get; set; }
+        public DbSet<User> users { get; set; }  
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationContext).Assembly);

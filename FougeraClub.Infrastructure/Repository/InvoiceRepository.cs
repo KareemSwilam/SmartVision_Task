@@ -16,7 +16,7 @@ namespace FougeraClub.Infrastructure.Repository
 
         public async Task<Invoice> GetInvoiceWithItems(int id)
         {
-            IQueryable<Invoice> query =  _db.Where( i => i.Id == id ).Include(i => i.PurchaseItems);
+            IQueryable<Invoice> query =  _db.Where( i => i.PurchaseOrderId == id ).Include(i => i.PurchaseItems);
             var result = await query.FirstOrDefaultAsync();
             return result;
         }

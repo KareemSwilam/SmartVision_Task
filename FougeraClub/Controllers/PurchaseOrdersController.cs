@@ -14,15 +14,18 @@ namespace FougeraClub.Controllers
             private readonly IPurchaseOrdersServices _purchaseOrdersServices;
             private readonly IPurchaseItemsServices _purchaseItemsServices;
             private readonly ISupplierServices _supplierServices;
+            private readonly IInvoiceServices _invoiceServices; 
 
             public PurchaseOrderController(
                 IPurchaseOrdersServices purchaseOrdersServices,
                 IPurchaseItemsServices purchaseItemsServices,
-                ISupplierServices supplierServices)
+                ISupplierServices supplierServices,
+                IInvoiceServices invoiceServices)
             {
                 _purchaseOrdersServices = purchaseOrdersServices;
                 _purchaseItemsServices = purchaseItemsServices;
                 _supplierServices = supplierServices;
+                _invoiceServices = invoiceServices;
             }
 
             // GET: /Admin/PurchaseOrder/Index
@@ -249,6 +252,33 @@ namespace FougeraClub.Controllers
             TempData["ToastType"] = "error";
             TempData["ToastMessage"] = "فشل في التعديل";
             return RedirectToAction(nameof(Index));
+        }
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            try
+            {
+                // Calling the service method you provided
+                var result = await _invoiceServices.GetAllDetailsInvoiceByOrderId(id);
+
+                if (result.IsSuccess)
+                {
+                    return View(result.Value);
+                }
+                else
+                {
+                    // Handle the "NotFoundError" or other failures
+                    TempData["ToastType"] = "error";
+                    TempData["ToastMessage"] = result.Error?.Message ?? "تعذر العثور على تفاصيل الفاتورة";
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ToastType"] = "error";
+                TempData["ToastMessage"] = "خطأ: " + ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
     }
 }

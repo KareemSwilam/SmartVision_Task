@@ -11,7 +11,7 @@ namespace FougeraClub.Services.IServices
     public interface IInvoiceServices
     {
         public Task<CustomResult> AddInvoice(InvoiceCreateDto dto);
-        public Task<CustomResult> AsignInvoice(int id);
+        public Task<CustomResult> AsignInvoice(int orderId);
         public Task<CustomResult<InvoiceDto>> GetInvoiceByOrderId(int orderid);
         public Task<CustomResult<InvoiceWithItemsWithSupplierNameDto>> GetAllDetailsInvoiceByOrderId(int orderid);
         public Task<CustomResult> UpdateInvoice(int orderid, InvoiceUpdateDto dto);

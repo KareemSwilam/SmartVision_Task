@@ -41,6 +41,7 @@
   <!-- IDClassificationMLModel removed for starter repository (file not present) -->
   <ItemGroup>
     <Folder Include="wwwroot\bootstrap\" />
+    <Folder Include="wwwroot\uploads\signatures\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FougeraClub.Infrastructure\FougeraClub.Infrastructure.csproj" />
