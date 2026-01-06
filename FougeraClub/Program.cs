@@ -33,7 +33,8 @@ builder.Services.AddPurchaesServices();
 var config = TypeAdapterConfig.GlobalSettings;
 config.Scan(typeof(PurchaseOrdersMappingConfig).Assembly,
     typeof(PurchaseItemsMappingConfig).Assembly,
-   typeof(SupplierMappingConfig).Assembly);
+   typeof(SupplierMappingConfig).Assembly,
+   typeof(UserMappingConfig).Assembly);
 
 builder.Services.AddSingleton(config);
 builder.Services.AddScoped<IMapper, ServiceMapper>();

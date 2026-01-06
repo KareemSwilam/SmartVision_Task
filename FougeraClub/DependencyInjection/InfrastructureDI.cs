@@ -13,6 +13,7 @@ namespace FougeraClub.DependencyInjection
             services.AddScoped<IPurchaseItemsRepository, PurchaseItemsRepository>();
             services.AddScoped<IPurchaseOrdersRepository, PurchaseOrdersRepository>();
             services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             return services;
         }
     }

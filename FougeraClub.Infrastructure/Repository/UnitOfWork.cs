@@ -17,17 +17,20 @@ namespace FougeraClub.Infrastructure.Repository
 
         public IPurchaseOrdersRepository PurchaseOrders { get; private set; }
         public IInvoiceRepository Invoice { get; private set; }
+        public IUserRepository User { get; private set; }
         public UnitOfWork(ApplicationContext context,
                           ISupplierRepository supplier,
                           IPurchaseItemsRepository purchaseItems,
                           IPurchaseOrdersRepository purchaseOrders,
-                          IInvoiceRepository invoice)
+                          IInvoiceRepository invoice,
+                          IUserRepository user)
         {
             _context = context;
             Supplier = supplier;
             PurchaseItems = purchaseItems;
             PurchaseOrders = purchaseOrders;
             Invoice = invoice;
+            User = user;
         }
 
         public void Dispose()
