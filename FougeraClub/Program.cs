@@ -2,6 +2,7 @@
 using FluentValidation.AspNetCore;
 using FougeraClub.DependencyInjection;
 using FougeraClub.Infrastructure.Persistence;
+using FougeraClub.Services.DTOs.SupplierDtos;
 using FougeraClub.Services.Mapping;
 using FougeraClub.Services.Validations;
 using Mapster;
@@ -38,6 +39,8 @@ config.Scan(typeof(PurchaseOrdersMappingConfig).Assembly,
 
 builder.Services.AddSingleton(config);
 builder.Services.AddScoped<IMapper, ServiceMapper>();
+builder.Services.AddScoped(typeof(ValidationFilter<>));
+builder.Services.AddValidatorsFromAssemblyContaining<SupplierCreateDto>();
 
 
 // PermissionScanner removed for starter project

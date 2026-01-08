@@ -1,14 +1,16 @@
-﻿using FougeraClub.Services.DTOs.PurchaseOrdersDtos;
-using FougeraClub.Services.Services;
-using FougeraClub.Services.DTOs.PurchaseItemsDtos;
+﻿using FougeraClub.Services.DTOs.PurchaseItemsDtos;
+using FougeraClub.Services.DTOs.PurchaseOrdersDtos;
+using FougeraClub.Services.DTOs.SupplierDtos;
 using FougeraClub.Services.IServices;
+using FougeraClub.Services.Services;
+using FougeraClub.Services.Validations;
+using FougeraClub.VM;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using FougeraClub.VM;
 
 namespace FougeraClub.Controllers
     {
-        //[Area("Admin")]
+        
         public class PurchaseOrderController : Controller
         {
             private readonly IPurchaseOrdersServices _purchaseOrdersServices;
@@ -81,20 +83,13 @@ namespace FougeraClub.Controllers
         }
         // POST: /Admin/PurchaseOrder/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreatePurchaseOrderVM model)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    // إعادة تحميل الموردين في حال وجود خطأ في البيانات
-            //    var suppliersResult = await _supplierServices.GetSuppliers();
-            //    ViewBag.Suppliers = suppliersResult.Value;
-            //    return View(model);
-            //}
+            
 
             try
             {
-                // 1. إضافة أمر الشراء الأساسي
+                
                 var orderResult = await _purchaseOrdersServices.AddOrders(model.Order);
 
                 if (orderResult.IsSuccess)
@@ -103,7 +98,7 @@ namespace FougeraClub.Controllers
                     var lastOrder = await _purchaseOrdersServices.GetLastOrderNumber(); // أو طريقة لاسترجاع الـ ID الفعلي
                     int newOrderId = lastOrder.Value;
 
-                    // 2. إضافة الأصناف
+                    
                     foreach (var item in model.Items)
                     {
                         await _purchaseItemsServices.AddItem(newOrderId, item);
@@ -132,18 +127,18 @@ namespace FougeraClub.Controllers
         {
             try
             {
-                // استدعاء خدمة الحذف التي قمت بتعريفها
+                
                 var result = await _purchaseOrdersServices.DeleteOrder(id);
 
                 if (result.IsSuccess)
                 {
-                    // إعداد رسالة النجاح لتظهر عبر SweetAlert في صفحة Index
+                    
                     TempData["ToastType"] = "success";
                     TempData["ToastMessage"] = "تم حذف أمر الشراء بنجاح";
                 }
                 else
                 {
-                    // إعداد رسالة الخطأ في حال فشل الحذف (مثلاً الطلب غير موجود)
+                   
                     TempData["ToastType"] = "error";
                     TempData["ToastMessage"] = "فشل الحذف: " + (result.Error?.Message ?? "حدث خطأ غير متوقع");
                 }
@@ -154,23 +149,22 @@ namespace FougeraClub.Controllers
                 TempData["ToastMessage"] = "خطأ أثناء الحذف: " + ex.Message;
             }
 
-            // العودة دائماً إلى صفحة القائمة الرئيسية
+           
             return RedirectToAction(nameof(Index));
         }
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            // 1. جلب بيانات أمر الشراء
+           
             var orderResult = await _purchaseOrdersServices.GetOrderAndSupplierWithFilter();
             var orderData = orderResult.Value.FirstOrDefault(x => x.Id == id);
 
             if (orderData == null) return NotFound();
 
-            // 2. جلب الأصناف التابعة لهذا الأمر
-            // ملاحظة: افترضنا وجود خدمة تجلب الأصناف برقم الأوردو، إذا لم تكن موجودة استخدم الـ UnitOfWork مباشرة
-            var itemsResult = await _purchaseItemsServices.GetOrderItems(id); // تأكد من وجود هذه الوظيفة
+            
+            var itemsResult = await _purchaseItemsServices.GetOrderItems(id); 
 
-            // 3. تجهيز الـ ViewModel
+           
             var viewModel = new UpdatePurchaseOrderVm
             {
                 Order = new PurchaseOrdersUpdateDto
@@ -188,16 +182,16 @@ namespace FougeraClub.Controllers
                 }).ToList()
             };
 
-            // 4. تجهيز البيانات المساعدة
+            
             var suppliers = await _supplierServices.GetSuppliers();
             ViewBag.Suppliers = suppliers.Value;
             ViewBag.IsEdit = true;
             ViewBag.OrderId = id;
 
-            return View(viewModel); // سنستخدم نفس صفحة Create
+            return View(viewModel); 
         }
 
-        // POST: /Admin/PurchaseOrder/Edit/5
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, UpdatePurchaseOrderVm model)
@@ -238,7 +232,7 @@ namespace FougeraClub.Controllers
                     
                     else
                     {
-                        // صنف جديد (Id = 0) -> إضافة
+                       
                         await _purchaseItemsServices.AddItem(id, new PurchaseItemCreateDto
                         {
                             Amount = item.Amount,
@@ -262,7 +256,7 @@ namespace FougeraClub.Controllers
         {
             try
             {
-                // Calling the service method you provided
+                
                 var result = await _invoiceServices.GetAllDetailsInvoiceByOrderId(id);
 
                 if (result.IsSuccess)
@@ -273,7 +267,7 @@ namespace FougeraClub.Controllers
                 }
                 else
                 {
-                    // Handle the "NotFoundError" or other failures
+                    
                     TempData["ToastType"] = "error";
                     TempData["ToastMessage"] = result.Error?.Message ?? "تعذر العثور على تفاصيل الفاتورة";
                     return RedirectToAction(nameof(Index));
@@ -290,7 +284,7 @@ namespace FougeraClub.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignInvoice(int orderId, string otp)
         {
-            // 1. Static OTP Validation
+            
             if (otp != "1111")
             {
                 TempData["ToastType"] = "error";
@@ -298,7 +292,7 @@ namespace FougeraClub.Controllers
                 return RedirectToAction(nameof(Details), new { id = orderId });
             }
 
-            // 2. Call the Service to Update IsAsign
+            
             var result = await _invoiceServices.AsignInvoice(orderId);
 
             if (result.IsSuccess)
@@ -312,7 +306,7 @@ namespace FougeraClub.Controllers
                 TempData["ToastMessage"] = result.Error?.Message ?? "حدث خطأ أثناء التوقيع";
             }
 
-            // 3. Return the Details view for the specific order
+            
             return RedirectToAction(nameof(Details), new { id = orderId });
         }
     }
