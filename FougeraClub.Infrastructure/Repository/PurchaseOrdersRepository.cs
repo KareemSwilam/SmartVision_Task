@@ -17,7 +17,9 @@ namespace FougeraClub.Infrastructure.Repository
 
         public async Task<List<PurchaseOrders>> GetAllOrderandSupplier(DateOnly? fromDate = null, DateOnly? toDate = null, string? VATNumber = null)
         {
-            IQueryable<PurchaseOrders> query = _db.Include(po => po.supplier);
+            IQueryable<PurchaseOrders> query = _db.Include(po => po.supplier)
+                                                  .Include(po => po.Invoice).AsSingleQuery();
+                                                  
             if(fromDate != null )
                 query = query.Where(po => po.Date >=  fromDate);
             if(toDate != null)

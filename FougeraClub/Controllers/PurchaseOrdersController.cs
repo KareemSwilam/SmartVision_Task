@@ -14,18 +14,21 @@ namespace FougeraClub.Controllers
             private readonly IPurchaseOrdersServices _purchaseOrdersServices;
             private readonly IPurchaseItemsServices _purchaseItemsServices;
             private readonly ISupplierServices _supplierServices;
-            private readonly IInvoiceServices _invoiceServices; 
+            private readonly IInvoiceServices _invoiceServices;
+        private readonly IUserServices _userServices;
 
             public PurchaseOrderController(
                 IPurchaseOrdersServices purchaseOrdersServices,
                 IPurchaseItemsServices purchaseItemsServices,
                 ISupplierServices supplierServices,
-                IInvoiceServices invoiceServices)
+                IInvoiceServices invoiceServices,
+                IUserServices userServices)
             {
                 _purchaseOrdersServices = purchaseOrdersServices;
                 _purchaseItemsServices = purchaseItemsServices;
                 _supplierServices = supplierServices;
                 _invoiceServices = invoiceServices;
+                _userServices = userServices;
             }
 
             // GET: /Admin/PurchaseOrder/Index
@@ -42,6 +45,7 @@ namespace FougeraClub.Controllers
 
                     });
                     var Supplier = await _supplierServices.GetSuppliers();
+
                     ViewBag.Suppliers = Supplier.Value;
                     ViewBag.Count = result.Value.Count();
                     ViewBag.CurrentPage = pageNumber;
@@ -263,6 +267,8 @@ namespace FougeraClub.Controllers
 
                 if (result.IsSuccess)
                 {
+                    var user = await _userServices.GetUSer(3);
+                    ViewBag.User = user.Value;
                     return View(result.Value);
                 }
                 else
@@ -279,6 +285,35 @@ namespace FougeraClub.Controllers
                 TempData["ToastMessage"] = "خطأ: " + ex.Message;
                 return RedirectToAction(nameof(Index));
             }
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SignInvoice(int orderId, string otp)
+        {
+            // 1. Static OTP Validation
+            if (otp != "1111")
+            {
+                TempData["ToastType"] = "error";
+                TempData["ToastMessage"] = "رمز التحقق غير صحيح | Invalid OTP";
+                return RedirectToAction(nameof(Details), new { id = orderId });
+            }
+
+            // 2. Call the Service to Update IsAsign
+            var result = await _invoiceServices.AsignInvoice(orderId);
+
+            if (result.IsSuccess)
+            {
+                TempData["ToastType"] = "success";
+                TempData["ToastMessage"] = "تم التوقيع بنجاح | Signed Successfully";
+            }
+            else
+            {
+                TempData["ToastType"] = "error";
+                TempData["ToastMessage"] = result.Error?.Message ?? "حدث خطأ أثناء التوقيع";
+            }
+
+            // 3. Return the Details view for the specific order
+            return RedirectToAction(nameof(Details), new { id = orderId });
         }
     }
 }

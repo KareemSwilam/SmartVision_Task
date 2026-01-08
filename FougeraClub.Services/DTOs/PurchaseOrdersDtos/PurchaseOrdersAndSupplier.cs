@@ -15,5 +15,6 @@ namespace FougeraClub.Services.DTOs.PurchaseOrdersDtos
         public string VATNumber { get; set; }
         public DateOnly Date { get; set; }
         public bool ApplyVAT { get; set; }  
+        public bool IsAsign {  get; set; }
     }
 }

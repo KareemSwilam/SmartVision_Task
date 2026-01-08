@@ -123,13 +123,20 @@
                                                             <i class="fa-solid fa-eye fs-5"></i>
                                                         </a>
                                                     </span>
-                                                    <span data-bs-toggle="tooltip" title="تعديل">
-                                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn-control btn-icon btn-sm rounded-circle">
+                                                    <span data-bs-toggle="tooltip" title="@(item.IsAsign ? "لا يمكن التعديل - تم الاعتماد" : "تعديل")">
+                                                        <a asp-action="Edit" asp-route-id="@item.Id"
+                                                           class="btn-control btn-icon btn-sm rounded-circle @(item.IsAsign ? "disabled-btn" : "")"
+                                                           style="@(item.IsAsign ? "pointer-events: none; opacity: 0.5;" : "")">
                                                             <i class="fa-solid fa-pen-to-square fs-5"></i>
                                                         </a>
                                                     </span>
-                                                    <span data-bs-toggle="tooltip" title="حذف">
-                                                        <button type="button" onclick="confirmDelete(@item.Id)" class="btn-control btn-icon btn-sm rounded-circle">
+
+                                                    <span data-bs-toggle="tooltip" title="@(item.IsAsign ? "لا يمكن الحذف - تم الاعتماد" : "حذف")">
+                                                        <button type="button"
+                                                                onclick="confirmDelete(@item.Id)"
+                                                                class="btn-control btn-icon btn-sm rounded-circle @(item.IsAsign ? "disabled-btn" : "")"
+                                                                @(item.IsAsign ? "disabled" : "")
+                                                                style="@(item.IsAsign ? "opacity: 0.5; cursor: not-allowed;" : "")">
                                                             <i class="fa-solid fa-trash fs-5"></i>
                                                         </button>
                                                     </span>

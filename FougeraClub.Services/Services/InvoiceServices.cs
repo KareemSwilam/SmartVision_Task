@@ -82,6 +82,14 @@ namespace FougeraClub.Services.Services
 
         }
 
+        public async Task<CustomResult<bool>> IsAssignInvoice(int orderId)
+        {
+            var invoiceExist = await _unit.Invoice.Get(i => i.PurchaseOrderId == orderId);
+            if (invoiceExist == null)
+                return CustomResult<bool>.Failure(CustomError.NotFoundError("Invoice you try to get not Exist"));
+            return CustomResult<bool>.Success(invoiceExist.IsAsign);
+        }
+
         public async Task<CustomResult> UpdateInvoice(int orderid, InvoiceUpdateDto dto)
         {
             var invoiceExist = await _unit.Invoice.Get(i => i.PurchaseOrderId == orderid);
