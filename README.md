@@ -26,7 +26,7 @@ Service Implementations: Core application logic.
 
 DTOs (Data Transfer Objects): Contracts for data exchange.
 
-Mappers: Logic for object-to-object mapping (e.g., AutoMapper).
+Mappers: Logic for object-to-object mapping .
 
 Validators: Input and business rule validation.
 
