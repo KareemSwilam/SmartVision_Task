@@ -50,11 +50,13 @@ namespace FougeraClub.Services.Services
         public async Task<CustomResult> DeleteOrder(int id)
         {
             var orderExist = await _unit.PurchaseOrders.Get(po =>  po.Id == id);
-            if (orderExist != null)
-                _unit.PurchaseOrders.Delete(orderExist);
-            CustomResult.Failure(CustomError.NotFoundError("The order you try to delete Not Exist"));
+            if (orderExist == null)
+                CustomResult.Failure(CustomError.NotFoundError("The order you try to delete Not Exist"));
+            var invoice = await _unit.Invoice.Get(i => i.PurchaseOrderId ==  id);   
+            _unit.Invoice.Delete(invoice);
+            _unit.PurchaseOrders.Delete(orderExist!);
             var complete = await _unit.Save();
-            if(complete == 1) return CustomResult.Success();
+            if(complete == 2) return CustomResult.Success();
             return CustomResult.Failure(CustomError.ServerError("Failer in Delete this Order"));
 
         }
